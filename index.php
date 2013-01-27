@@ -29,7 +29,7 @@
 			<li><a href="#about">About this App</a></li>
 		</ul>
 		
-		<p> some blurb will go here</p>
+		<p>You may or may not have realized how much healthcare procedure costs, especially radiology (MRIs, ultrasounds, mammograms, etc), range throughout small geographical areas. Take a look at how much these procedures cost in New Jersey.</p>
 	</div>
 	
 		<?php
@@ -71,17 +71,40 @@
 	</div>
 	
 	<div id="pricelist">
-		<!-- pricelist goes here -->
 		
 		<h2><?php echo $procedureFilter; ?> Costs in <?php echo $countyFilter; ?></h2>
 		
 		<?php
-			$prices = mysql_query("SELECT * FROM prices");
+			/* if in county filter, see if Medicare costs exist */
+			
+			if ( $_POST['submitted'] == "filter") {
+			
+				// get local from county id
+				$locale = getLocale($_POST['county']);
+				
+				// get price from locale and procedure
+				$medicareCost = getMedicareCost($locale,$_POST['procedure']);
+				
+				if ( $locale == "rest" ) {
+					$locale = "rest of";
+				}
+				
+				if ($medicareCost != null) {
+					echo '<p id="medicare">The US categorizes ' . getName($_POST['county'], "counties") . ' County as part of <span class="locale">' . $locale . ' Jersey</span>, and so it pays $' . $medicareCost . ' for this procedure. <br /><strong>What are YOU paying?</strong></p>';
+				}
+				else { /* no medicare data to see here */ }
+				
+			}
+		
+		
+			$prices = mysql_query("SELECT * FROM prices ORDER BY cost");
 			$count = mysql_num_rows($prices);
 				
 			if ($count != 0) { 
 				
 				$printedCount == 0;
+				
+				echo '<p><small>* Prices are sorted from lowest to highest.</small><p>';
 				
 				echo '<table border="1" cellpadding="10">
 						<thead>
@@ -233,7 +256,7 @@
 			
 			<p>
 				<label for="cost">Procedure Cost *</label>
-				<input type="text" class="text" name="cost" id="cost" />
+				$<input type="text" class="text" name="cost" id="cost" />
 			</p>
 			
 			<p>
@@ -253,7 +276,12 @@
 	
 	<div id="about">
 		<h3>This application was built on January 27th and 28th, 2013, for <a href="http://hackjersey.com">Hack Jersey</a>!</h3>
-		<p>It was built by the team <strong>Ladies Night</strong>: <a href="http://clearhealthcosts.com">ClearHealthCost.com's</a> founder, Jeanne Pinder (former NY Times Journalist), and developer, <a href="http://jennschiffer.com">Jenn Schiffer</a> (Computer Science Department Administrator at Montclair State University).</p>
+		<p>It was built by the team <strong>Ladies Night</strong>: 
+			<ol>
+				<li>Concept and reporting: Jeanne Pinder (former NY Times Journalist and founder of <a href="http://clearhealthcosts.com">ClearHealthCost.com</a>)</li>
+				<li>Design and engineering: <a href="http://jennschiffer.com">Jenn Schiffer</a> (Computer Science Department Administrator at Montclair State University and software engineer).</li>
+			</ol>
+		</p>
 		
 		<p> We &hearts; healthcare cost transparency, the state of New Jersey, Montclair State University, open data, and viewers like you.</p>
 	

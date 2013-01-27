@@ -21,6 +21,7 @@ div#container { margin: 10px auto; width: 800px; padding: 5px 20px; text-align: 
 #filter, #pricelist, #share, #about { margin: 40px 0; }
 
 /* Form */
+#success { padding: 10px; background: #99cccc; font-size: 1.3em; text-align: center; }
 form { background: #ddd; padding: 20px; }
 form input.text, textarea { border: 1px solid #aaa; width: 200px; padding: 5px 10px; }
 form fieldset { border: none; background: #eee; }
@@ -30,3 +31,4 @@ form textarea { width: 400px; height: 100px; }
 #pricelist { background: #efefef; padding: 20px; }
 #pricelist li { list-style: none; }
 #pricelist thead { background: #99cccc; font-weight: bold; }
+.locale { text-transform: capitalize; font-style: italic; }

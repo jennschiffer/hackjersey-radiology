@@ -179,4 +179,37 @@ function getCounty($municipality) {
 	return $id;
 }
 
+/**
+* Get locale of county
+*/
+function getLocale($countyID) {
+	$locales = mysql_query("SELECT * FROM counties WHERE `id` = '$countyID'");
+	$count = mysql_num_rows($locales);
+	if ($count != 0) {
+		while ( $row = mysql_fetch_array($locales)) {
+			$locale = $row['locale'];
+		}
+	}
+	else return null;
+
+	return $locale;
+}
+
+/**
+* Get medicare price of a locale and procedure
+*/
+function getMedicareCost($locale, $procedureID) {
+	$costs = mysql_query("SELECT * FROM medicare WHERE `locale` = '$locale' AND `procedureID` = '$procedureID'");
+	$count = mysql_num_rows($costs);
+	if ($count != 0) {
+		while ( $row = mysql_fetch_array($costs)) {
+			$cost = $row['cost'];
+		}
+	}
+	else return null;
+
+	return $cost;
+}				
+
+
 ?>
