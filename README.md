@@ -2,5 +2,5 @@
 
 ## A Hack Jersey entry, created by team Ladies Night
 
-Reporter: Jeanne Pinder
-Engineer: Jenn Schiffer
+* Reporter: Jeanne Pinder
+* Engineer: Jenn Schiffer
