@@ -157,4 +157,26 @@ function getDropdownCounties() {
 	else echo "no data error - counties";
 }
 
+/**
+* Get county ID of municipality
+*/
+function getCounty($municipality) {
+	$boro = $municipality . " Boro";
+	$twp = $municipality . " Twp";
+	$city = $municipality . " City";
+	$town = $municipality . " Town";
+	$village = $municipality . " Village";
+	
+	$municipalities = mysql_query("SELECT * FROM municipalities WHERE `name` = '$municipality' OR `name` = '$boro' OR `name` = '$twp' OR `name` = '$city' OR `name` = '$town' OR `name` = '$village'");
+	$count = mysql_num_rows($municipalities);
+	if ($count != 0) {
+		while ( $row = mysql_fetch_array($municipalities)) {
+			$id = $row['countyID'];
+		}
+	}
+	else return null;
+	
+	return $id;
+}
+
 ?>

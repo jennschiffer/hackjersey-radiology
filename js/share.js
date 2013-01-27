@@ -30,7 +30,7 @@ $(document).ready(function(){
 	});
 	
 	// validate share form
-	$("#share").click( function(){
+	$("#share-costs").click( function(){
 		$("input").removeClass('empty');
 		$("div").removeClass('empty');
 		$("p").removeClass('empty');

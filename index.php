@@ -2,7 +2,7 @@
 <html>
 <head>
 
-	<title>blah</title>
+	<title>The Cost of Radiology in New Jersey - a Hack Jersey Jam</title>
 	
 	<link rel="stylesheet" href="style.css" type="text/css" media="screen">	
 	
@@ -21,7 +21,7 @@
 <div id="container">
 
 	<div id="header">
-		<h1>New Jersey Radiology Costs</h1>
+		<h1>The Cost of Radiology in New Jersey</h1>
 		
 		<ul id="navigation">
 			<li><a href="#filter">See a Price List</a></li>
@@ -33,18 +33,24 @@
 	</div>
 	
 		<?php
+		
+			$procedureFilter = "Radiology";
+			$countyFilter = "all of New Jersey";
+			
 			if ( $_POST['submitted'] == "share" ) {
 				echo '<div id="success">Thanks for submitting your cost of radiology. Check out what others are paying near you!</div>';
 				
 				savePrice($_POST['procedure'], $_POST['insurance'], $_POST['provider'], $_POST['address'], $_POST['city'], $_POST['state'], $_POST['zip'], $_POST['phone'], $_POST['website'], $_POST['cost'], $_POST['comments'], $_POST['source'], $_POST['entryDate'], $_POST['ip']);
 			}
 			else if ( $_POST['submitted'] == "filter" ) {
-				echo "hey girl hey";
+				$procedureFilter = getName($_POST['procedure'], "procedures");
+				$countyFilter = getName($_POST['county'], "counties") . " County";
 			}
 		?>
 		
 	<div id="filter">
 		<form id="filter-prices" method="post">
+	
 			<p>
 				<label for="county">Choose a county: </label>
 				<select name="county">
@@ -67,13 +73,24 @@
 	<div id="pricelist">
 		<!-- pricelist goes here -->
 		
+		<h2><?php echo $procedureFilter; ?> Costs in <?php echo $countyFilter; ?></h2>
+		
 		<?php
 			$prices = mysql_query("SELECT * FROM prices");
 			$count = mysql_num_rows($prices);
 				
 			if ($count != 0) { 
 				
-				echo '<ol>';
+				$printedCount == 0;
+				
+				echo '<table border="1" cellpadding="10">
+						<thead>
+							<td>Procedure</td>
+							<td>Provider/Facility</td>
+							<td>Patient\'s Insurance<br /> Coverage</td>
+							<td>Patient\'s Cost</td>
+							<td>Patient Comments</td>
+						</thead>';
 				
 				while ( $row = mysql_fetch_array($prices)) {
 					$id = $row['ID'];
@@ -83,34 +100,69 @@
 					$sourceID = $row['sourceID'];
 					$cost = $row['cost'];
 					$comments = $row['comments'];
-					$ip = $row['IP'];
-					
-					echo '<ul>
-							<li>' . $id . '</li>
-							<li>' . getName($procedureID, "procedures") . '</li>';
 					
 					$facility = getFacility($facilityID); 
+					$facilityName = $facility['name']; 
+					$facilityAddress = $facility['address']; 
+					$facilityCity = $facility['city']; 
+					$facilityState = $facility['state']; 
+					$facilityZip = $facility['zip']; 
+					$facilityPhone = $facility['phone']; 
+					$facilityWebsite = $facility['website'];
+
+					$thisCountyID = getCounty($facilityCity);
 					
-					echo   '<li><ol>
-								<li>' . $facility['name'] . '</li>
-								<li>' . $facility['address'] . '</li>
-								<li>' . $facility['city'] . '</li>
-								<li>' . $facility['state'] . '</li>
-								<li>' . $facility['zip'] . '</li>
-						    </ol></li>';
+					if ( $_POST['submitted'] == "filter") {
 					
-					echo   '<li>' . $facility['phone'] . '</li>
-							<li>' . $facility['website'] . '</li>	
-							<li>' . getName($insuranceID, "insurance") . '</li>
-							<li>' . getName($sourceID, "sources") . '</li>
-							<li>' . $cost . '</li>
-							<li>' . $comments . '</li>
-							<li>' . $entryDate . '</li>
-							<li>' . $ip . '</li>
-						  </ul>';
+						if ( $procedureID == $_POST['procedure'] && $thisCountyID == $_POST['county'] ) {
+							// matches filter, so post row
+								echo '<tr>
+										<td>' . getName($procedureID, "procedures") . '</td>';
+													
+								echo   '<td>
+											<li><strong>' . $facilityName . '</strong></li>
+											<li>' . $facilityAddress . '</li>
+											<li>' . $facilityCity . ', ' . $facilityState . '</li>
+											<li>' . $facilityZip . '</li>
+											<li>' . $facilityPhone . '</li>
+											<li><a href="' . $facilityWebsite . '">' . $facilityWebsite . '</a></li>
+									    </td>';
+								
+								echo   '<td>' . getName($insuranceID, "insurance") . '</td>
+										<td>$' . $cost . '</td>
+										<td>' . $comments . '</td>
+									  </tr>';
+
+							$printedCount++;
+						}
+						else { /* doesn't match filter, so don't post row */ }
+						
+					}
+					else {
+						echo '<tr>
+								<td>' . getName($procedureID, "procedures") . '</td>';
+											
+						echo   '<td>
+									<li><strong>' . $facilityName . '</strong></li>
+									<li>' . $facilityAddress . '</li>
+									<li>' . $facilityCity . ', ' . $facilityState . '</li>
+									<li>' . $facilityZip . '</li>
+									<li>' . $facilityPhone . '</li>
+									<li><a href="' . $facilityWebsite . '">' . $facilityWebsite . '</a></li>
+							    </td>';
+						
+						echo   '<td>' . getName($insuranceID, "insurance") . '</td>
+								<td>$' . $cost . '</td>
+								<td>' . $comments . '</td>
+							  </tr>';
+						
+						$printedCount++;
+					}
 				}
-				echo '</ol>';
-			}
+				echo '</table>';
+			} else echo "No prices available. Share yours!";
+			
+			if ($printedCount == 0 ) { echo "<p>No prices available. Share yours!</p>"; }
 		?>
 		
 	</div>
@@ -118,6 +170,10 @@
 	<div id="form">
 	
 		<form id="crowdsource" method="post">
+		
+		<h2>Share Your NJ Radiology Costs</h2>
+		
+		<small>(* required)</small>
 			
 			<p>
 				<label for="procedure">Procedure *</label>
@@ -135,53 +191,53 @@
 			
 			<p>
 				<label for="provider">Provider/Doctor *</label>
-				<input type="text" name="provider" id="provider" placeholder="" />
+				<input type="text" class="text" name="provider" id="provider" placeholder="" />
 			</p>
 			
 			<fieldset name="address-fields">
-			
 	
-				<div>
+				<p>
 					<label for="address">Address</label>
-					<input type="text" name="address" id="address" />
-				</div>
+					<input type="text" class="text" name="address" id="address" />
+				</p>
 				
-				<div>
+				<p>
 					<label for="city">City *</label>
-					<input type="text" name="city" id="city" />
-				</div>
+					<input type="text" class="text" name="city" id="city" />
+				</p>
 				
-				<div>
-					<label for="state">State</label>
-					New Jersey
+				<p>
+					<label for="state">State: </label>
+					<em><strong>New Jersey</strong></em>
 					<input type="hidden" name="state" value="NJ" />
-				</div>
+				</p>
 				
-				<div>
+				<p>
 					<label for="zipcode">Zip Code</label>
-					<input type="text" name="zipcode" id="zip" />
-				</div>
+					<input type="text" class="text" name="zipcode" id="zip" />
+				</p>
 				
-				<div>
+				<p>
 					<label for="phone">Phone Number</label>
-					<input type="text" name="phone" id="phone" />
-				</div>
+					<input type="text" class="text" name="phone" id="phone" />
+				</p>
+							
+				<p>
+					<label for="website">Website</label>
+					<input type="text" class="text" name="website" id="website" />
+				</p>
 				
 			</fieldset>
-			
-			<p>
-				<label for="website">Website</label>
-				<input type="text" name="website" id="website" />
-			</p>
+
 	
 			
 			<p>
 				<label for="cost">Procedure Cost *</label>
-				<input type="text" name="cost" id="cost" />
+				<input type="text" class="text" name="cost" id="cost" />
 			</p>
 			
 			<p>
-				<label for="comments">Comments</label>
+				<label for="comments">Comments?</label><br />
 				<textarea name="comments" id="comments" ></textarea>
 			</p>
 			
@@ -189,7 +245,7 @@
 			<input type="hidden" name="entryDate" value="<?php echo date('Y-m-d'); ?>" />
 			<input type="hidden" name="ip" value="<?php echo $_SERVER["REMOTE_ADDR"]; ?>" />
 			<input type="hidden" name="source" value="crowdsource form" />
-			<input type="submit" id="share" class="submit" value="Submit" />
+			<input type="submit" id="share-costs" class="submit" value="Submit" />
 		
 		</form>
 	
@@ -209,5 +265,9 @@
 <script type="text/javascript" src="js/places.js"></script>
 <script type="text/javascript" src="js/share.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
+
+<script src="//pmetrics.performancing.com/js" type="text/javascript"></script>
+<script type="text/javascript">try{ clicky.init(19765); }catch(e){}</script>
+<noscript><p><img alt="Performancing Metrics" width="1" height="1" src="//pmetrics.performancing.com/19765ns.gif" /></p></noscript>
 </body>
 </html>
