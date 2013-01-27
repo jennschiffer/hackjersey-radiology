@@ -141,4 +141,20 @@ function saveFacility($provider, $address, $city, $state, $zip, $phone, $website
 
 }
 
+/**
+* Get dropdown selector of all counties
+*/
+function getDropdownCounties() {
+	$counties = mysql_query("SELECT * FROM counties");
+	$count = mysql_num_rows($counties);
+	if ($count != 0) { 
+		while ( $row = mysql_fetch_array($counties)) {
+			$id = $row['id'];
+			$name = $row['name'];
+			echo '<option value="' . $id . '">' . $name . '</option>';
+		}
+	}
+	else echo "no data error - counties";
+}
+
 ?>
