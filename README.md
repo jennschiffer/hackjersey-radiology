@@ -12,3 +12,8 @@
 * Update 'functions.php' connect function with database credentials
 * Import 'demo.sql' into your database
 * Have fun!
+
+### Other assets
+
+* data and scraper scripts written in '/data' directory
+* our "white paper" - HJLadiesNightassets.pdf
