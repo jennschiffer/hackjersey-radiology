@@ -4,15 +4,6 @@
 */
 
 $(document).ready(function(){
-
-	
-	/*// google places logo
-	$('#provider').focusin(function(){
-		$('#powered-by-google').fadeIn();
-	});
-	$('#provider').focusout(function(){
-		$('#powered-by-google').fadeOut();
-	});*/
 	
 	var input = document.getElementById('provider');
 	var options = { componentRestrictions: {country: 'us'} };
@@ -67,15 +58,13 @@ $(document).ready(function(){
 				}
 			}
 			
-			$("input#provider").val(place.name);
+			$("#provider").addClass("remove-this").parent("p").children("label")
+				.after('<input type="text" value="' + place.name + '" id="provider" name="provider">');
+			$(".remove-this").remove();
 			$("#address").val(number + " " + route);
 			$("#city").val(town);
 			$("#zip").val(postalCode);
 			$("#phone").val(phone);
-			$("#provider").val("");
-			alert(place.name);
-			$("#provider").val(place.name);
-
 		}
 	
 	});
