@@ -30,6 +30,8 @@
 		</ul>
 		
 		<p>You may or may not have realized how much healthcare procedure costs, especially radiology (MRIs, ultrasounds, mammograms, etc), range throughout small geographical areas. Take a look at how much these procedures cost in New Jersey.</p>
+		
+		<p><a href="HJLadiesNightassets.pdf">Read our story.</a></p>
 	</div>
 	
 		<?php

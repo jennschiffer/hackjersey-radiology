@@ -110,7 +110,7 @@ function savePrice($procedureID, $insuranceID, $provider, $address, $city, $stat
 	$count = mysql_num_rows($facilities);
 	if ($count == 0) {
 		saveFacility($provider, $address, $city, $state, $zip, $phone, $website);
-		$facilityID = mysql_query("SELECT LAST_INSERT_ID()");
+		$facilityID = mysql_insert_id();
 	}
 	else {
 		while ( $row = mysql_fetch_array($facilities) ) {

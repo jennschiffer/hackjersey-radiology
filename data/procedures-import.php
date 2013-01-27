@@ -42,7 +42,7 @@
 			$facilityZip = trim($columnItem[8]);
 			$facilityPhone = trim($columnItem[9]);
 			$facilityWebsite = trim($columnItem[10]);
-			$cost = trim($columnItem[7]);
+			$cost = trim($columnItem[4]);
 			$source = "us";
 			$comments = $columnItem[12];
 			$insuranceID = "1";
