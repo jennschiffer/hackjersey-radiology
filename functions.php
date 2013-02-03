@@ -11,12 +11,12 @@
 */
 function hackjerseyConnect() {
 	
-	$link = mysql_connect('localhost', 'root', 'root');
+	$link = mysql_connect('HOST', 'USERNAME', 'PASSWORD');
 	if (!$link) {
 		die('Could not connect to mysql: ' . mysql_error());
 	}
 	
-	$hackjerseyDatabase = mysql_select_db("hackjersey", $link);
+	$hackjerseyDatabase = mysql_select_db("DATABASE_NAME", $link);
 	if (!$hackjerseyDatabase) {
 		die('Could not reach database: ' . mysql_error());
 	}
@@ -210,6 +210,47 @@ function getMedicareCost($locale, $procedureID) {
 
 	return $cost;
 }				
+
+/**
+* API function to grab data
+*/
+function radiologyAPI() {
+	$radiologyPrices = mysql_query("SELECT * FROM prices") or die("Cannot connect to price table.");
+	$priceArray = array();
+	while ($price = mysql_fetch_array($radiologyPrices)) {
+	
+		$facility = getFacility($price['facilityID']);
+		
+		$single = array( 
+			"id" => $price['ID'], 
+			"procedure_id" => $price['procedureID'],
+			"procedure_name" => getName($price['procedureID'],"procedures"),
+			"facility_id" => $price['facilityID'],
+			"facility_name" => $facility['name'],
+			"facility_address" =>  $facility['address'],
+			"facility_city" => $facility['city'],
+			"facility_state" => $facility['state'],
+			"facility_zip" => $facility['zip'],
+			"facility_phone" => $facility['phone'],
+			"facility_website" => $facility['website'],
+			// "facility_lat" => ,
+			// "facility_long" => ,
+			// "facility_county" => ,
+			//"facility_locale" => ,
+			"insurance_id" => $price['insuranceID'],
+			"insurance_name" => getName($price['insuranceID'],"insurance"),
+			"source_id" => $price['sourceID'],
+			"source_name" => getName($price['sourceID'],"sources"),
+			"cost" => $price['cost'],
+			"comments" => $price['comments'],
+			"entryDate" => $price['entryDate'],
+			"ip" => $price['IP']
+		);
+		$priceArray[] = $single;
+	}
+	$priceArray = json_encode($priceArray);
+	echo $priceArray;
+}
 
 
 ?>

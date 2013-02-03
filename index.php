@@ -1,3 +1,17 @@
+<?php 
+
+/* include all files in /function directory */
+include "functions.php";
+
+/* connect to the database */
+hackjerseyConnect();
+
+/* check if this is an API call */
+if( function_exists( $_GET['show'] ) ){
+	$_GET['show']();
+}
+else { ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -5,14 +19,6 @@
 	<title>The Cost of Radiology in New Jersey - a Hack Jersey Jam</title>
 	
 	<link rel="stylesheet" href="style.css" type="text/css" media="screen">	
-	
-	<?php 
-		/* include all files in /function directory */
-		include "functions.php";
-		
-		/* connect to the database */
-		hackjerseyConnect();
-	?>
 
 </head>
 
@@ -26,6 +32,7 @@
 		<ul id="navigation">
 			<li><a href="#filter">See a Price List</a></li>
 			<li><a href="#crowdsource">Share Your Radiology Costs</a></li>
+			<li><a href="#api">API documentation</a></li>
 			<li><a href="#about">About this App</a></li>
 		</ul>
 		
@@ -72,7 +79,7 @@
 		</form>
 	</div>
 	
-	<div id="pricelist">
+	<div id="pricelist" class="section">
 		
 		<h2><?php echo $procedureFilter; ?> Costs in <?php echo $countyFilter; ?></h2>
 		
@@ -192,7 +199,7 @@
 		
 	</div>
 	
-	<div id="form">
+	<div id="form" class="section">
 	
 		<form id="crowdsource" method="post">
 		
@@ -276,8 +283,96 @@
 	
 	</div>
 	
-	<div id="about">
-		<h3>This application was built on January 27th and 28th, 2013, for <a href="http://hackjersey.com">Hack Jersey</a>!</h3>
+	<div id="api" class="section">
+		<h2>Use the API to get the data!</h2>
+		
+		<p>API call (last updated 2/3/2013): <a href="http://pancaketheorem.com/stuff/hackjersey/?show=radiologyAPI" target="_blank">http://example.com/?show=radiologyAPI</a></p>
+		
+		<p>In the <em>functions.php</em> file, you'll find everything you need in the <em>radiologyAPI()</em> function, but there is a list of parts of the price object:</p>
+		
+		<table id="api-definitions" cellpadding="10" border="1">
+			<thead>
+				<td>price.OBJECT</td><td>description</td>
+			</thead>
+			
+			<tr>
+				<td>id</td><td>unique id of each price record</td>
+			</tr>
+			<tr>
+				<td>procedure_id</td><td>unique id of each procedure
+			</tr>
+			<tr>
+				<td>procedure_name</td><td>name of procedure
+			</tr>
+			<tr>
+				<td>facility_id</td><td>unique id of each facility/provider
+			</tr>
+			<tr>
+				<td>facility_name</td><td>name of facility/doctor
+			</tr>
+			<tr>
+				<td>facility_address</td><td>facility street address
+			</tr>
+			<tr>
+				<td>facility_city</td><td>facility city
+			</tr>
+			<tr>
+				<td>facility_state</td><td>facility state
+			</tr>
+			<tr>
+				<td>facility_zip</td><td>facility zip code
+			</tr>
+			<tr>
+				<td>facility_phone</td><td>facility phone number
+			</tr>
+			<tr>
+				<td>facility_website</td><td>url of facility website
+			</tr>
+			<tr>
+				<td>insurance_id</td><td>unique id of each insurance status
+			</tr>
+			<tr>
+				<td>insurance_name</td><td>name or status of procedure insurance coverage
+			</tr>
+			<tr>
+				<td>source_id</td><td>unique id of each source
+			</tr>
+			<tr>
+				<td>source_name</td><td>where this record came from (imported by us, crowdsource form, etc)
+			</tr>
+			<tr>
+				<td>cost</td><td>the cost of this record's procedure
+			</tr>
+			<tr>
+				<td>comments</td><td>user-submitted comments
+			</tr>
+			<tr>
+				<td>entry_date</td><td>date that this price was entered
+			</tr>
+			<tr>
+				<td>ip</td><td>IP address of person who submitted this price
+			</tr>
+		</table>
+		
+		<p>In the works: return data with latitude, longitude, county, and Medicare-coined locale.<br />Also, optimize API call to allow filtering of return data.</p>
+		
+		<h3>Example use with jQuery:</h3>
+		
+<code><pre>$(document).ready(function(){
+	var procedures = "http://pancaketheorem.com/stuff/hackjersey/?show=radiologyAPI";
+	$.getJSON(procedures, function(data){
+		$('#example').append('&lt;li>A(n) "' + price.procedure_name + '" at ' + price.facility_name + ' costs $' + price.cost + '.&lt;/li>');
+		});
+	});
+});</pre></code>	
+
+<div id="example"></div>		
+
+	
+	</div>
+	
+	<div id="about" class="section">
+		<h2>This application was built on January 27th and 28th, 2013, for <a href="http://hackjersey.com">Hack Jersey</a>!</h2>
 		<p>It was built by the team <strong>Ladies Night</strong>: 
 			<ol>
 				<li>Concept and reporting: Jeanne Pinder (former NY Times Journalist and founder of <a href="http://clearhealthcosts.com">ClearHealthCost.com</a>)</li>
@@ -292,6 +387,18 @@
 </div>
 
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+
+<!-- <script type="text/javascript">
+$(document).ready(function(){
+	var procedures = "http://pancaketheorem.com/stuff/hackjersey/?show=radiologyAPI";
+	$.getJSON(procedures, function(data){
+		$.each(data, function(i,price){
+		    $('#example').append('<li>A(n) "' + price.procedure_name + '" at ' + price.facility_name + ' costs $' + price.cost + '.</li>');
+		});
+	});
+});
+</script> -->
+
 <script type="text/javascript" src="js/places.js"></script>
 <script type="text/javascript" src="js/share.js"></script>
 <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true"></script>
@@ -301,3 +408,5 @@
 <noscript><p><img alt="Performancing Metrics" width="1" height="1" src="//pmetrics.performancing.com/19765ns.gif" /></p></noscript>
 </body>
 </html>
+
+<?php } // end API call ?>

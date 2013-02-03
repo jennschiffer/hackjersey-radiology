@@ -10,7 +10,7 @@
 * Download contents of this app and put into desired directory
 * Create mysql database on server
 * Update 'functions.php' connect function with database credentials
-* Import 'demo.sql' into your database
+* Import '/data/demo.sql' into your database
 * Have fun!
 
 ### Other assets

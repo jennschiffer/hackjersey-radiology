@@ -18,7 +18,7 @@ a { text-decoration: none; }
 /* Layout */
 body { padding: 10px 0 40px; margin: 0; }
 div#container { margin: 10px auto; width: 800px; padding: 5px 20px; text-align: left; }
-#filter, #pricelist, #share, #about { margin: 40px 0; }
+.section { margin: 40px 0; }
 
 /* Form */
 #success { padding: 10px; background: #99cccc; font-size: 1.3em; text-align: center; }
@@ -32,3 +32,8 @@ form textarea { width: 400px; height: 100px; }
 #pricelist li { list-style: none; }
 #pricelist thead { background: #99cccc; font-weight: bold; }
 .locale { text-transform: capitalize; font-style: italic; }
+
+/* API */
+#api-definitions { background: #efefef; }
+#api-definitions thead { background: #ccc; }
+pre { background: #efefef; border: 1px solid #ccc; padding: 20px; white-space: pre-wrap;}
